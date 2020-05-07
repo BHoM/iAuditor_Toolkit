@@ -35,17 +35,9 @@ namespace BH.oM.Adapter.iAuditor
         /**** Public Properties                         ****/
         /***************************************************/
 
-        [Description("Specifies ID to search and return objects for in CarbonQueryDatabase. If this is specified it supersedes other input parameters.")]
+        [Description("Specifies ID of the Audit to search for.")]
         public virtual string Id { get; set; } = null;
 
-        [Description("Sets maximum amount of items to return from CarbonQueryDatabase")]
-        public virtual int Count { get; set; } = 0;
-
-        [Description("Specifies string to search and return objects for in CarbonQueryDatabase, ie RedBuilt RedLam LVL")]
-        public virtual string NameLike { get; set; } = null;
-
-        [Description("Specifies plant name to search and return objects for in CarbonQueryDatabase, ie Dupont")]
-        public virtual string PlantName { get; set; } = null;
 
         /***************************************************/
     }
