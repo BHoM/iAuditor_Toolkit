@@ -20,55 +20,38 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
-using BH.Engine.Reflection;
-using System.Collections;
-using BH.Engine.Units;
-using BH.oM.iAuditor;
 
-namespace BH.Adapter.iAuditor
+using System.ComponentModel;
+using System.Collections.Generic;
+using BH.oM.Base;
+
+
+namespace BH.oM.iAuditor
 {
-    public static partial class Convert
+
+    [Description("Audit from iAuditor")]
+    public class Audit : BHoMObject
     {
         /***************************************************/
-        /****           Public Methods                  ****/
+        /**** Properties                                ****/
         /***************************************************/
 
-        public static Audit ToAudit(this CustomObject obj)
-        {
-            IEnumerable<CustomObject> items = null;
-            List<string> labels = new List<string>();
-            if (obj.PropertyValue("items") != null)
-            {
-                object itemsCol = obj.PropertyValue("items");
-                //foreach(CustomObject item in items)
-                //{
-                //    labels.Add(item.PropertyValue("label")?.ToString() ?? "");
-                //}
-            }
+        [Description("ID of Audit")]
+        public virtual string TemplateID { get; set; }
 
-            Audit audit = new Audit
-            {
-                TemplateID = obj.PropertyValue("template_id")?.ToString() ?? "",
-                Author = obj.PropertyValue("template_data.authorship.author")?.ToString() ?? "",
-                Name = obj.PropertyValue("audit_data.name")?.ToString() ?? "",
-                Labels = labels,
-                Score = obj.PropertyValue("audit_data.score_percentage")?.ToString() ?? "",
-            };
+        [Description("Creator of audit")]
+        public virtual string Author { get; set; }
 
-            return audit;
-        }
+        [Description("Project Number")]
+        public virtual int ProjectNumber { get; set; }
+
+        [Description("Labels available from the Audit")]
+        public virtual List<string> Labels { get; set; }
+
+        [Description("Score as a percentage")]
+        public virtual string Score { get; set; }
 
         /***************************************************/
-
     }
 }
+
