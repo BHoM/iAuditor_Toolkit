@@ -43,7 +43,7 @@ namespace BH.oM.iAuditor
         public virtual string Author { get; set; }
 
         [Description("Project Number")]
-        public virtual int ProjectNumber { get; set; }
+        public virtual string ProjectNumber { get; set; }
 
         [Description("Labels available from the Audit")]
         public virtual List<string> Labels { get; set; }
