@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CarbonQueryDatabase_Adapter")]
+[assembly: AssemblyTitle("iAuditor_Adapter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CarbonQueryDatabase_Adapter")]
+[assembly: AssemblyProduct("iAuditor_Adapter")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("E485344C-ACA1-4E4E-8EF9-A9D6447BCC79")]
+[assembly: Guid("9b105cda-be5d-43f5-94ab-56523cb6ead0")]
 
 // Version information for an assembly consists of the following four values:
 //
