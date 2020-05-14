@@ -29,33 +29,21 @@ using BH.oM.Base;
 namespace BH.oM.iAuditor
 {
 
-    [Description("Comment to be supplied to audit within iAuditor")]
-    public class Comment : BHoMObject
+    [Description("Installation progress to compile your audit, please include image filepaths ")]
+    public class InstallationProgress : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("Comment number supplied to audit")]
-        public virtual int CommentNumber { get; set; }
-
-        [Description("Priority tag to better categorize your comment")]
-        public virtual string Priority { get; set; } // this could be an enum of options
-        
-        [Description("Status description at time of observation")]
+        [Description("General status update to be documented within the audit")]
         public virtual string Status { get; set; }
 
-        [Description("Provide a list of assignees for the comment")]
-        public virtual List<string> Assign { get; set; }
-
-        [Description("Provide a description for the scope of the comment")]
-        public virtual string Description { get; set; }
+        [Description("Please provided a description tag for Elevation")]
+        public virtual List<string> ElevationArea { get; set; }
 
         [Description("Filepath for image(s) associated with the comment")]
         public virtual List<string> ImageFilePaths { get; set; }
-
-        [Description("List of... Please provided a description tag for Distribution")]
-        public virtual List<string> Distribution { get; set; }
 
         /***************************************************/
     }
