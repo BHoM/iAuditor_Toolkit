@@ -36,14 +36,56 @@ namespace BH.oM.iAuditor
         /**** Properties                                ****/
         /***************************************************/
 
-        [Description("ID of Audit")]
-        public virtual string TemplateID { get; set; }
+        [Description("Title of audit")]
+        public virtual string Title { get; set; }
+
+        [Description("Filename of audit")]
+        public virtual string Filename { get; set; }
+
+        [Description("Site Visit Number of audit")]
+        public virtual int SiteVisitNumber { get; set; }
+
+        [Description("Client for which the audit is being recorded")]
+        public virtual string Client { get; set; }
+
+        [Description("Revision Number of audit")]
+        public virtual int RevisionNumber { get; set; }
+
+        [Description("Date of inspection for audit (YYYYDDMM date format)")]
+        public virtual int InspectionDate { get; set; }
+
+        [Description("Date of issue corresponding to audit (YYYYDDMM date format)")]
+        public virtual int IssueDate { get; set; }
 
         [Description("Creator of audit")]
         public virtual string Author { get; set; }
 
-        [Description("Project Number")]
+        [Description("Project Number of audit")]
         public virtual string ProjectNumber { get; set; }
+
+        [Description("Job leader of audit")]
+        public virtual string JobLeader { get; set; }
+
+        [Description("List of... Please provided a description tag for Distribution")]
+        public virtual List<string> Distribution { get; set; }
+
+        [Description("List of persons in attendance during audit")]
+        public virtual List<string> Attendance { get; set; }
+
+        [Description("Reason(s) for visit and audit")]
+        public virtual List<string> VisitPurpose { get; set; }
+
+        [Description("List of areas inspected throughout the audit")]
+        public virtual List<string> AreasInspected { get; set; }
+
+        [Description("General status update to be documented within the audit")]
+        public virtual string Status { get; set; }
+
+        [Description("Please provided a description tag for Elevation")]
+        public virtual string Elevation { get; set; } // is this referencing the specific areas audited, would this not correspond to the AreasInspected prop?
+
+        [Description("ID of Audit")]
+        public virtual string TemplateID { get; set; }
 
         [Description("Labels available from the Audit")]
         public virtual List<string> Labels { get; set; }
