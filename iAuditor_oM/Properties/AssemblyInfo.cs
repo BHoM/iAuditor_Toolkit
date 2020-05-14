@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CarbonQueryDatabase_oM")]
+[assembly: AssemblyTitle("iAuditor_oM")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CarbonQueryDatabase_oM")]
+[assembly: AssemblyProduct("iAuditor_oM")]
 [assembly: AssemblyCopyright("Copyright © https://github.com/BHoM")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("42B8CCEC-8515-4F52-BFEA-310E04539283")]
+[assembly: Guid("dda9fc7d-c5c9-4993-8da5-b628f640cf3e")]
 
 // Version information for an assembly consists of the following four values:
 //
