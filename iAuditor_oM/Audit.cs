@@ -93,6 +93,9 @@ namespace BH.oM.iAuditor
         [Description("Score as a percentage")]
         public virtual string Score { get; set; }
 
+        [Description("Comment number supplied to audit")]
+        public virtual List<Comment> Comments { get; set; }
+
         /***************************************************/
     }
 }
