@@ -78,12 +78,6 @@ namespace BH.oM.iAuditor
         [Description("List of areas inspected throughout the audit")]
         public virtual List<string> AreasInspected { get; set; }
 
-        [Description("General status update to be documented within the audit")]
-        public virtual string Status { get; set; }
-
-        [Description("Please provided a description tag for Elevation")]
-        public virtual string Elevation { get; set; } // is this referencing the specific areas audited, would this not correspond to the AreasInspected prop?
-
         [Description("ID of Audit")]
         public virtual string TemplateID { get; set; }
 
