@@ -42,6 +42,9 @@ namespace BH.oM.iAuditor
         [Description("Filename of audit")]
         public virtual string Filename { get; set; }
 
+        [Description("ID of Audit")]
+        public virtual string TemplateID { get; set; }
+
         [Description("Site Visit Number of audit")]
         public virtual int SiteVisitNumber { get; set; }
 
@@ -66,10 +69,10 @@ namespace BH.oM.iAuditor
         [Description("Job leader of audit")]
         public virtual string JobLeader { get; set; }
 
-        [Description("List of... Please provided a description tag for Distribution")]
+        [Description("List of people audit is distributed to")]
         public virtual List<string> Distribution { get; set; }
 
-        [Description("List of persons in attendance during audit")]
+        [Description("List of people in attendance during audit")]
         public virtual List<string> Attendance { get; set; }
 
         [Description("Reason(s) for visit and audit")]
@@ -78,17 +81,17 @@ namespace BH.oM.iAuditor
         [Description("List of areas inspected throughout the audit")]
         public virtual List<string> AreasInspected { get; set; }
 
-        [Description("ID of Audit")]
-        public virtual string TemplateID { get; set; }
+        [Description("Installation progress objects from audit")]
+        public virtual List<InstallationProgress> InstallationProgressObjects { get; set; }
 
-        [Description("Labels available from the Audit")]
+        [Description("Comments from audit")]
+        public virtual List<Comment> Comments { get; set; }
+
+        [Description("Labels available from the audit")]
         public virtual List<string> Labels { get; set; }
 
         [Description("Score as a percentage")]
         public virtual string Score { get; set; }
-
-        [Description("Comment number supplied to audit")]
-        public virtual List<Comment> Comments { get; set; }
 
         /***************************************************/
     }
