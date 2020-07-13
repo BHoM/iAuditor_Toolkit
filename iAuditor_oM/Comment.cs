@@ -54,7 +54,7 @@ namespace BH.oM.iAuditor
         [Description("Filepath for image(s) associated with the comment")]
         public virtual List<string> ImageFilePaths { get; set; }
 
-        [Description("List of... Please provided a description tag for Distribution")]
+        [Description("List of people comment is distributed to")]
         public virtual List<string> Distribution { get; set; }
 
         /***************************************************/

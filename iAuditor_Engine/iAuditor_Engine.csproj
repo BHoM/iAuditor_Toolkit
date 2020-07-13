@@ -32,15 +32,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BHoM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM\Build\BHoM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Data_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM\Build\Data_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HTTP_oM">
-      <HintPath>C:\ProgramData\BHoM\Assemblies\HTTP_Toolkit\Build\HTTP_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\HTTP_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LifeCycleAssessment_oM">
