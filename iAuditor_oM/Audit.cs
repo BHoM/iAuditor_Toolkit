@@ -54,11 +54,11 @@ namespace BH.oM.iAuditor
         [Description("Revision Number of audit")]
         public virtual int RevisionNumber { get; set; }
 
-        [Description("Date of inspection for audit (YYYYDDMM date format)")]
-        public virtual int InspectionDate { get; set; }
+        [Description("Date of inspection for audit")]
+        public virtual string InspectionDate { get; set; }
 
-        [Description("Date of issue corresponding to audit (YYYYDDMM date format)")]
-        public virtual int IssueDate { get; set; }
+        [Description("Date of issue corresponding to audit")]
+        public virtual string IssueDate { get; set; }
 
         [Description("Creator of audit")]
         public virtual string Author { get; set; }
@@ -76,7 +76,7 @@ namespace BH.oM.iAuditor
         public virtual List<string> Attendance { get; set; }
 
         [Description("Reason(s) for visit and audit")]
-        public virtual List<string> VisitPurpose { get; set; }
+        public virtual string VisitPurpose { get; set; }
 
         [Description("List of areas inspected throughout the audit")]
         public virtual List<string> AreasInspected { get; set; }
@@ -86,9 +86,6 @@ namespace BH.oM.iAuditor
 
         [Description("Comments from audit")]
         public virtual List<Comment> Comments { get; set; }
-
-        [Description("Labels available from the audit")]
-        public virtual List<string> Labels { get; set; }
 
         [Description("Score as a percentage")]
         public virtual string Score { get; set; }
