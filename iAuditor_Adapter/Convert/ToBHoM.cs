@@ -37,6 +37,8 @@ namespace BH.Adapter.iAuditor
             string purpose = "";
             List<string> distribution = new List<string>();
             List<string> attendance = new List<string>();
+            List<InstallationProgress> installProgress = new List<InstallationProgress>();
+            List<Comment> comments = new List<Comment>();
 
             if (obj.PropertyValue("items") != null)
             {
@@ -121,6 +123,8 @@ namespace BH.Adapter.iAuditor
                     }
                 }
             }
+
+
 
             Audit audit = new Audit
             {
