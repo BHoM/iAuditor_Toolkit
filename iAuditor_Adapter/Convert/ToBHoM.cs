@@ -81,6 +81,10 @@ namespace BH.Adapter.iAuditor
                             areas.Add(entry.Trim());
                         }
                     }
+                    else if (items[i].PropertyValue("label").ToString() == "Audit Title")
+                    {
+                        title = (items[i].PropertyValue("responses.text")?.ToString() ?? "");
+                    }
                 }
             }
 
@@ -124,7 +128,8 @@ namespace BH.Adapter.iAuditor
                 }
             }
 
-
+            installProgress = obj.ToInstallationProgressObjects();
+            comments = obj.ToComments();
 
             Audit audit = new Audit
             {
@@ -144,6 +149,8 @@ namespace BH.Adapter.iAuditor
                 Attendance = attendance,
                 VisitPurpose = purpose,
                 AreasInspected = areas,
+                InstallationProgressObjects = installProgress,
+                Comments = comments,
                 Score = obj.PropertyValue("audit_data.score_percentage")?.ToString() ?? "",
             };
 
@@ -152,5 +159,84 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
+        public static List<InstallationProgress> ToInstallationProgressObjects(this CustomObject obj)
+        {
+            List<InstallationProgress> installProgList = new List<InstallationProgress>();
+
+            if (obj.PropertyValue("items") != null)
+            {
+                List<object> items = obj.PropertyValue("items") as List<object>;
+                for (int i = 0; i < items.Count(); i++)
+                {
+                    if (items[i].PropertyValue("label").ToString() == @"Elevation / area" && items[i].PropertyNames().Contains("responses"))
+                    {
+                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, obj);
+                        installProgList.Add(installObject);
+                    }
+                }
+            }
+            return installProgList;
+        }
+
+        /***************************************************/
+
+        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject)
+        {
+            string generalStatus = "";
+            if (auditCustomObject.PropertyValue("items") != null)
+            {
+                List<object> items = auditCustomObject.PropertyValue("items") as List<object>;
+                for (int i = 0; i < items.Count(); i++)
+                {
+                    if (items[i].PropertyValue("label").ToString() == "General status")
+                    {
+                        generalStatus = items[i].PropertyValue("responses.text")?.ToString() ?? "";
+                    }
+                }               
+            }
+
+            string area = obj.PropertyValue("responses.text")?.ToString() ?? "";
+            InstallationProgress installProgObj = new InstallationProgress
+            {
+                Status = generalStatus,
+                Area = area,
+            };
+            return installProgObj;
+        }
+
+        /***************************************************/
+
+        public static List<Comment> ToComments(this CustomObject obj)
+        {
+            List<Comment> comments = new List<Comment>();
+
+            if (obj.PropertyValue("items") != null)
+            {
+                List<object> items = obj.PropertyValue("items") as List<object>;
+                for (int i = 0; i < items.Count(); i++)
+                {
+                    if (items[i].PropertyValue("label").ToString() == "Comment description" && items[i].PropertyNames().Contains("responses"))
+                    {
+                        Comment comment = ToComment(items[i] as CustomObject, obj);
+                        comments.Add(comment);
+                    }
+                }
+            }
+            return comments;
+        }
+
+        /***************************************************/
+
+        public static Comment ToComment(this CustomObject obj, CustomObject auditCustomObject)
+        {
+            string description = obj.PropertyValue("responses.text")?.ToString() ?? "";
+            Comment comment = new Comment
+            {
+                Description = description,
+            };
+            return comment;
+        }
+
+        /***************************************************/
     }
 }
