@@ -23,7 +23,7 @@ namespace BH.oM.iAuditor
         public virtual string Status { get; set; }
 
         [Description("Provide a list of assignees for the comment")]
-        public virtual List<string> Assign { get; set; }
+        public virtual string Assign { get; set; }
 
         [Description("Provide a description for the scope of the comment")]
         public virtual string Description { get; set; }

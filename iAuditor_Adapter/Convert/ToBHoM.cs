@@ -209,13 +209,22 @@ namespace BH.Adapter.iAuditor
         public static List<Comment> ToComments(this CustomObject obj)
         {
             List<Comment> comments = new List<Comment>();
+            List<string> commentIDs = new List<string>();
 
             if (obj.PropertyValue("items") != null)
             {
                 List<object> items = obj.PropertyValue("items") as List<object>;
                 for (int i = 0; i < items.Count(); i++)
                 {
-                    if (items[i].PropertyValue("label").ToString() == "Comment description" && items[i].PropertyNames().Contains("responses"))
+                    if (items[i].PropertyValue("label").ToString() == @"Site comment #")
+                    {
+                        List<object> commentIDList = items[i].PropertyValue("children") as List<object>;
+                        commentIDList.ForEach(x => commentIDs.Add(x.ToString()));
+                    }
+                }
+                for (int i = 0; i < items.Count(); i++)
+                {
+                    if (commentIDs.Contains(items[i].PropertyValue("item_id").ToString()) && items[i].PropertyValue("type").ToString() == "element")
                     {
                         Comment comment = ToComment(items[i] as CustomObject, obj);
                         comments.Add(comment);
@@ -229,12 +238,56 @@ namespace BH.Adapter.iAuditor
 
         public static Comment ToComment(this CustomObject obj, CustomObject auditCustomObject)
         {
-            string description = obj.PropertyValue("responses.text")?.ToString() ?? "";
+            List<object> commentElems = new List<object>();
+            List<string> commentElemIDs = new List<string>();
+            List<object> commentIDList = obj.PropertyValue("children") as List<object>;
+            commentIDList.ForEach(x => commentElemIDs.Add(x.ToString()));
+            List<object> items = auditCustomObject.PropertyValue("items") as List<object>;
+            string priority = "";
+            string status = "";
+            string assign = "";
+            string type = "";
+            string location = "";
+            string description = "";
+            for (int i = 0; i < items.Count(); i++)
+            {
+                if (commentElemIDs.Contains(items[i].PropertyValue("item_id").ToString()))
+                {
+                    commentElems.Add(items[i]);
+                }
+            }
+
+            for (int i = 0; i < commentElems.Count(); i++)
+            {
+                if (commentElems[i].PropertyValue("label").ToString() == "Priority")
+                {
+                    List<object> vals = commentElems[i].PropertyValue("responses.selected") as List<object>;
+                    priority = vals[0].PropertyValue("label").ToString();
+                }
+                else if (commentElems[i].PropertyValue("label").ToString() == "Status")
+                {
+                    List<object> vals = commentElems[i].PropertyValue("responses.selected") as List<object>;
+                    status = vals[0].PropertyValue("label").ToString();
+                }
+                else if (commentElems[i].PropertyValue("label").ToString() == "Assign")
+                {
+                    List<object> vals = commentElems[i].PropertyValue("responses.selected") as List<object>;
+                    assign = vals[0].PropertyValue("label").ToString();
+                }
+                else if (commentElems[i].PropertyValue("label").ToString().Contains("description"))
+                {
+                    description = (commentElems[i].PropertyValue("responses.text")?.ToString() ?? "");
+                }
+            }
+
             Comment comment = new Comment
             {
                 Description = description,
+                Priority = priority,
+                Status = status,
+                Assign = assign,
             };
-            return comment;
+                return comment;
         }
 
         /***************************************************/
