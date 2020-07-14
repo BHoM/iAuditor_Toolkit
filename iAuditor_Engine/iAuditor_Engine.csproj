@@ -68,10 +68,16 @@
     <Compile Include="Compute\BearerToken.cs" />
     <Compile Include="Create\GetRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\InstallationProgress.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modify\" />
+    <Folder Include="Query\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\iAuditor_oM\iAuditor_oM.csproj">
+      <Project>{0e328721-467b-4a00-a4e4-64b79e073b5a}</Project>
+      <Name>iAuditor_oM</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
