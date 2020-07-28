@@ -19,8 +19,8 @@ namespace BH.oM.iAuditor
         [Description("Description for the area included")]
         public virtual string Area { get; set; }
 
-        [Description("Filepath for image(s) associated with the progress")]
-        public virtual List<string> ImageFilePaths { get; set; }
+        [Description("Media associated with the progress")]
+        public virtual List<string> Media { get; set; }
 
         /***************************************************/
     }

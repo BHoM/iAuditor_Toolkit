@@ -44,9 +44,15 @@ namespace BH.Adapter.iAuditor
             //Add parameters per config
             CustomObject requestParams = new CustomObject();
             string id = null;
+            string targetPath = null;
+            bool includeAssetFiles = true;
 
             if (config != null)
-                 id = config.Id;
+            {
+                id = config.Id;
+                targetPath = config.AssetFilePath;
+                includeAssetFiles = config.IncludeAssetFiles;
+            }
 
             //Create GET Request
             GetRequest getRequest;
@@ -91,7 +97,7 @@ namespace BH.Adapter.iAuditor
             {
                 foreach (CustomObject co in objList)
                 {
-                    Audit epdData = Adapter.iAuditor.Convert.ToAudit(co);
+                    Audit epdData = Convert.ToAudit(co, targetPath, includeAssetFiles);
                     epdDataFromRequest.Add(epdData);
                 }
             }
