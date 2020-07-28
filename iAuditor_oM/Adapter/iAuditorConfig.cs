@@ -16,6 +16,12 @@ namespace BH.oM.Adapter.iAuditor
         [Description("Specifies ID of the Audit to search for.")]
         public virtual string Id { get; set; } = null;
 
+        [Description("Path to pull/push media assets to/from that relate to the audit.")]
+        public virtual string AssetFilePath { get; set; } = @"C:\BHoM\iAuditor Assets";
+
+        [Description("Set to true to download / upload asset file sassociated with the audit.")]
+        public virtual bool IncludeAssetFiles { get; set; } = true;
+
 
         /***************************************************/
     }

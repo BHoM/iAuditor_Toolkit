@@ -28,8 +28,8 @@ namespace BH.oM.iAuditor
         [Description("Provide a description for the scope of the issue")]
         public virtual string Description { get; set; }
 
-        [Description("Filepath for image(s) associated with the issue")]
-        public virtual List<string> ImageFilePaths { get; set; }
+        [Description("Media associated with the issue")]
+        public virtual List<string> Media { get; set; }
 
         [Description("List of people issue is distributed to")]
         public virtual List<string> Distribution { get; set; }

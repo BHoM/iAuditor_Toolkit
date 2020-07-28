@@ -8,8 +8,11 @@ using System.Net.Http;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
+using BH.oM.HTTP;
+using BH.Engine.HTTP;
 using BH.Engine.Reflection;
 using System.Collections;
+using System.IO;
 using BH.Engine.Units;
 using BH.oM.iAuditor;
 
@@ -21,7 +24,7 @@ namespace BH.Adapter.iAuditor
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static Audit ToAudit(this CustomObject obj)
+        public static Audit ToAudit(this CustomObject obj, string targetPath, bool includeAssetFiles = true)
         {
             List<string> labels = new List<string>();
             string projectNumber = "";
@@ -38,7 +41,7 @@ namespace BH.Adapter.iAuditor
             List<string> distribution = new List<string>();
             List<string> attendance = new List<string>();
             List<InstallationProgress> installProgress = new List<InstallationProgress>();
-            List<Issue> comments = new List<Issue>();
+            List<Issue> issues = new List<Issue>();
 
             if (obj.PropertyValue("items") != null)
             {
@@ -129,7 +132,7 @@ namespace BH.Adapter.iAuditor
             }
 
             installProgress = obj.ToInstallationProgressObjects();
-            comments = obj.ToIssues();
+            issues = obj.ToIssues(targetPath, includeAssetFiles);
 
             Audit audit = new Audit
             {
@@ -150,7 +153,7 @@ namespace BH.Adapter.iAuditor
                 VisitPurpose = purpose,
                 AreasInspected = areas,
                 InstallationProgressObjects = installProgress,
-                Comments = comments,
+                Issues = issues,
                 Score = obj.PropertyValue("audit_data.score_percentage")?.ToString() ?? "",
             };
 
@@ -192,21 +195,23 @@ namespace BH.Adapter.iAuditor
                     {
                         generalStatus = items[i].PropertyValue("responses.text")?.ToString() ?? "";
                     }
-                }               
+                } 
             }
+
+            //TODO media from install progress objects dependent on iAuditor Template Fix
 
             string area = obj.PropertyValue("responses.text")?.ToString() ?? "";
             InstallationProgress installProgObj = new InstallationProgress
             {
                 Status = generalStatus,
-                Area = area,
+                Area = area
             };
             return installProgObj;
         }
 
         /***************************************************/
 
-        public static List<Issue> ToIssues(this CustomObject obj)
+        public static List<Issue> ToIssues(this CustomObject obj, string targetPath, bool includeAssetFiles = true)
         {
             List<Issue> issues = new List<Issue>();
             List<string> commentIDs = new List<string>();
@@ -214,6 +219,8 @@ namespace BH.Adapter.iAuditor
             if (obj.PropertyValue("items") != null)
             {
                 List<object> items = obj.PropertyValue("items") as List<object>;
+
+                // collect ids of each issue from iAuditor Site Comment Heading category
                 for (int i = 0; i < items.Count(); i++)
                 {
                     if (items[i].PropertyValue("label").ToString() == @"Site comment #")
@@ -226,7 +233,7 @@ namespace BH.Adapter.iAuditor
                 {
                     if (commentIDs.Contains(items[i].PropertyValue("item_id").ToString()) && items[i].PropertyValue("type").ToString() == "element")
                     {
-                        Issue issue = ToIssue(items[i] as CustomObject, obj);
+                        Issue issue = ToIssue(items[i] as CustomObject, obj, targetPath, includeAssetFiles);
                         issues.Add(issue);
                     }
                 }
@@ -236,18 +243,17 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject)
+        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, string targetPath, bool includeAssetFiles = true)
         {
             List<object> commentElems = new List<object>();
             List<string> commentElemIDs = new List<string>();
             List<object> commentIDList = obj.PropertyValue("children") as List<object>;
             commentIDList.ForEach(x => commentElemIDs.Add(x.ToString()));
             List<object> items = auditCustomObject.PropertyValue("items") as List<object>;
+            List<string> media = new List<string>();
             string priority = "";
             string status = "";
             string assign = "";
-            string type = "";
-            string location = "";
             string description = "";
             for (int i = 0; i < items.Count(); i++)
             {
@@ -278,6 +284,12 @@ namespace BH.Adapter.iAuditor
                 {
                     description = (commentElems[i].PropertyValue("responses.text")?.ToString() ?? "");
                 }
+                else if (commentElems[i].PropertyValue("type").ToString().Contains("media"))
+                {
+                    List<object> mediaObjs = commentElems[i].PropertyValue("media") as List<object>;
+                    List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
+                    mediaCos.ForEach(x => media.Add(ToMedia(x, auditCustomObject, targetPath, includeAssetFiles)));
+                }
             }
 
             Issue issue = new Issue
@@ -286,8 +298,29 @@ namespace BH.Adapter.iAuditor
                 Priority = priority,
                 Status = status,
                 Assign = assign,
+                Media = media
             };
                 return issue;
+        }
+
+        /***************************************************/
+
+        public static string ToMedia(this CustomObject obj, CustomObject auditCustomObject, string targetPath, bool includeAssetFiles = true)
+        {
+            string media;
+            string mediaID = obj.PropertyValue("media_id") as string;
+            string mediaExtension = obj.PropertyValue("file_ext") as string;
+
+            media = mediaID + "." + mediaExtension;
+
+            if (includeAssetFiles == true)
+            {
+                GetRequest mediaGetRequest = BH.Engine.iAuditor.Create.iAuditorRequest("audits/" + id, m_bearerToken);
+                string reqString = mediaGetRequest.ToUrlString();
+                string response = BH.Engine.HTTP.Compute.MakeRequest(mediaGetRequest);
+            }
+
+            return media;
         }
 
         /***************************************************/

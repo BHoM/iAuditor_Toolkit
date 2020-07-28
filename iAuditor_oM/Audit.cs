@@ -61,8 +61,8 @@ namespace BH.oM.iAuditor
         [Description("Installation progress objects from audit")]
         public virtual List<InstallationProgress> InstallationProgressObjects { get; set; }
 
-        [Description("Comments from audit")]
-        public virtual List<Issue> Comments { get; set; }
+        [Description("Issues from audit")]
+        public virtual List<Issue> Issues { get; set; }
 
         [Description("Score as a percentage")]
         public virtual string Score { get; set; }
