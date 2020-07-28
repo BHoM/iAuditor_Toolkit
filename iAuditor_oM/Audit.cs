@@ -20,7 +20,7 @@ namespace BH.oM.iAuditor
         public virtual string Filename { get; set; }
 
         [Description("ID of Audit")]
-        public virtual string TemplateID { get; set; }
+        public virtual string AuditID { get; set; }
 
         [Description("Site Visit Number of audit")]
         public virtual int SiteVisitNumber { get; set; }
@@ -62,7 +62,7 @@ namespace BH.oM.iAuditor
         public virtual List<InstallationProgress> InstallationProgressObjects { get; set; }
 
         [Description("Comments from audit")]
-        public virtual List<Comment> Comments { get; set; }
+        public virtual List<Issue> Comments { get; set; }
 
         [Description("Score as a percentage")]
         public virtual string Score { get; set; }

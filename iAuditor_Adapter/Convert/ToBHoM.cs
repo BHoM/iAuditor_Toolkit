@@ -38,7 +38,7 @@ namespace BH.Adapter.iAuditor
             List<string> distribution = new List<string>();
             List<string> attendance = new List<string>();
             List<InstallationProgress> installProgress = new List<InstallationProgress>();
-            List<Comment> comments = new List<Comment>();
+            List<Issue> comments = new List<Issue>();
 
             if (obj.PropertyValue("items") != null)
             {
@@ -129,13 +129,13 @@ namespace BH.Adapter.iAuditor
             }
 
             installProgress = obj.ToInstallationProgressObjects();
-            comments = obj.ToComments();
+            comments = obj.ToIssues();
 
             Audit audit = new Audit
             {
                 Title = title,
                 Filename = title,
-                TemplateID = obj.PropertyValue("template_id")?.ToString() ?? "",
+                AuditID = obj.PropertyValue("audit_id")?.ToString() ?? "",
                 SiteVisitNumber = visitNo,
                 Client = client,
                 Author = author,
@@ -206,9 +206,9 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static List<Comment> ToComments(this CustomObject obj)
+        public static List<Issue> ToIssues(this CustomObject obj)
         {
-            List<Comment> comments = new List<Comment>();
+            List<Issue> issues = new List<Issue>();
             List<string> commentIDs = new List<string>();
 
             if (obj.PropertyValue("items") != null)
@@ -226,17 +226,17 @@ namespace BH.Adapter.iAuditor
                 {
                     if (commentIDs.Contains(items[i].PropertyValue("item_id").ToString()) && items[i].PropertyValue("type").ToString() == "element")
                     {
-                        Comment comment = ToComment(items[i] as CustomObject, obj);
-                        comments.Add(comment);
+                        Issue issue = ToIssue(items[i] as CustomObject, obj);
+                        issues.Add(issue);
                     }
                 }
             }
-            return comments;
+            return issues;
         }
 
         /***************************************************/
 
-        public static Comment ToComment(this CustomObject obj, CustomObject auditCustomObject)
+        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject)
         {
             List<object> commentElems = new List<object>();
             List<string> commentElemIDs = new List<string>();
@@ -280,14 +280,14 @@ namespace BH.Adapter.iAuditor
                 }
             }
 
-            Comment comment = new Comment
+            Issue issue = new Issue
             {
                 Description = description,
                 Priority = priority,
                 Status = status,
                 Assign = assign,
             };
-                return comment;
+                return issue;
         }
 
         /***************************************************/
