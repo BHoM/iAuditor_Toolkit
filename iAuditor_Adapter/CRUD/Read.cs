@@ -88,21 +88,21 @@ namespace BH.Adapter.iAuditor
             }
 
             //Convert nested customObject from serialization to list of epdData objects
-            List<Audit> epdDataFromRequest = new List<Audit>();
+            List<Audit> audits = new List<Audit>();
 
-            object epdObjects = Engine.Reflection.Query.PropertyValue(responseObjs[0], "Objects");
+            object auditObjects = Engine.Reflection.Query.PropertyValue(responseObjs[0], "Objects");
 
-            IEnumerable objList = epdObjects as IEnumerable;
+            IEnumerable objList = auditObjects as IEnumerable;
             if (objList != null)
             {
                 foreach (CustomObject co in objList)
                 {
-                    Audit epdData = Convert.ToAudit(co, targetPath, includeAssetFiles);
-                    epdDataFromRequest.Add(epdData);
+                    Audit audit = Convert.ToAudit(co, m_bearerToken, targetPath, includeAssetFiles);
+                    audits.Add(audit);
                 }
             }
 
-            return epdDataFromRequest;
+            return audits;
         }
 
     }
