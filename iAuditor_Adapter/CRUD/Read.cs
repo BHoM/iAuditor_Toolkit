@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,19 +46,43 @@ namespace BH.Adapter.iAuditor
             CustomObject requestParams = new CustomObject();
             string id = null;
             string targetPath = null;
-            bool includeAssetFiles = true;
+            bool includeAssetFiles = false;
 
             if (config != null)
             {
                 id = config.Id;
-                targetPath = config.AssetFilePath;
                 includeAssetFiles = config.IncludeAssetFiles;
+                targetPath = config.AssetFilePath;
+                if (includeAssetFiles == true)
+                {
+                    //Filepath handling to create or direct to provided relevant directory 
+                    try
+                    {                       
+                        if (File.Exists(targetPath))
+                        {
+                            targetPath = Path.GetFullPath(targetPath);
+                            FileAttributes attr = File.GetAttributes(targetPath);
+                            if (attr.HasFlag(FileAttributes.Directory) == false)
+                                targetPath = Path.GetDirectoryName(targetPath);    
+                        }
+                        Directory.CreateDirectory(targetPath);
+                    }
+                    catch
+                    {
+                        targetPath = @"C:\BHoM\iAuditorAssets";
+                        Directory.CreateDirectory(targetPath);
+                        BH.Engine.Reflection.Compute.RecordWarning("Path is invalid, does not exist, or was not provided. Using " + targetPath + " as target path for assets. The target path must be an already existing folder in our environment.");
+                    }                   
+                }
             }
 
             //Create GET Request
             GetRequest getRequest;
             if (id == null)
-            { getRequest = BH.Engine.iAuditor.Create.iAuditorRequest("audits", m_bearerToken, requestParams); }
+            {
+                Engine.Reflection.Compute.RecordError("No audit ID provided. Please provide an audit ID using an iAuditorConfig ActionConfig.");
+                return new List<BH.oM.iAuditor.Audit>();
+            }
             else
             { getRequest = BH.Engine.iAuditor.Create.iAuditorRequest("audits/" + id, m_bearerToken); }
 

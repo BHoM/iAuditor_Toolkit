@@ -87,7 +87,7 @@ namespace BH.Adapter.iAuditor
                     {
                         title = (items[i].PropertyValue("responses.text")?.ToString() ?? "");
                     }
-                    else if (includeAssetFiles == true && items[i].PropertyValue("type").ToString() == "media" && items[i].PropertyValue("media") != null)
+                    else if (includeAssetFiles == true && items[i].PropertyValue("type").ToString() == "media" && Query.PropertyNames(items[i]).Contains("media"))
                     {
                         List<object> mediaObjs = items[i].PropertyValue("media") as List<object>;
                         foreach (object mediaObj in mediaObjs)
