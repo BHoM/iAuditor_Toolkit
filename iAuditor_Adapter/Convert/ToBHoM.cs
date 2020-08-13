@@ -32,6 +32,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.HTTP;
 using BH.Engine.HTTP;
+using BH.oM.Geometry;
 using BH.Engine.Reflection;
 using System.Collections;
 using System.IO;
