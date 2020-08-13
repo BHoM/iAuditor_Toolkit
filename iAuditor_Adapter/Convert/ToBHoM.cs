@@ -36,7 +36,7 @@ using BH.Engine.Reflection;
 using System.Collections;
 using System.IO;
 using BH.Engine.Units;
-using BH.oM.iAuditor;
+using BH.oM.Inspection;
 
 namespace BH.Adapter.iAuditor
 {
@@ -52,8 +52,12 @@ namespace BH.Adapter.iAuditor
             int visitNo = 0;
             int revNo = 0;
             string client = "";
-            string inspectionDate = "";
-            string issueDate = "";
+            string inspectionDateString = "";
+            DateTime inspectionDate = new DateTime();
+            DateTime inspectionDateUtc = new DateTime();
+            string issueDateString = "";
+            DateTime issueDate = new DateTime();
+            DateTime issueDateUtc = new DateTime();
             string author = "";
             string jobLeader = "";
             string title = "";
@@ -150,11 +154,15 @@ namespace BH.Adapter.iAuditor
                     }
                     else if (items[i].PropertyValue("label").ToString() == "Date of issue")
                     {
-                        issueDate = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        issueDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        DateTime.TryParse(issueDateString, out issueDate);
+                        issueDateUtc = issueDate;
                     }
                     else if (items[i].PropertyValue("label").ToString() == "Date of inspection")
                     {
-                        inspectionDate = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        inspectionDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        DateTime.TryParse(issueDateString, out inspectionDate);
+                        inspectionDateUtc = inspectionDate;
                     }
                     else if (items[i].PropertyValue("label").ToString() == "Revision no.")
                     {
@@ -177,9 +185,11 @@ namespace BH.Adapter.iAuditor
                 ProjectNumber = projectNumber,
                 JobLeader = jobLeader,
                 Name = obj.PropertyValue("audit_data.name")?.ToString() ?? "",
-                RevisionNumber = revNo,
-                IssueDate = issueDate,
+                RevisionNumber = revNo,       
                 InspectionDate = inspectionDate,
+                InspectionDateUtc = inspectionDateUtc,
+                IssueDate = issueDate,
+                IssueDateUtc = issueDateUtc,
                 Distribution = distribution,
                 Attendance = attendance,
                 VisitPurpose = purpose,

@@ -54,10 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapter\iAuditorConfig.cs" />
-    <Compile Include="InstallationProgress.cs" />
-    <Compile Include="Comment.cs" />
-    <Compile Include="Issue.cs" />
-    <Compile Include="Audit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
