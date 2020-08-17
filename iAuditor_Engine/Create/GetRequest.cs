@@ -22,11 +22,11 @@
  
 using BH.oM.Base;
 using System.Collections.Generic;
-using BH.oM.HTTP;
+using BH.oM.Adapters.HTTP;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.iAuditor
+namespace BH.Engine.Adapters.iAuditor
 {
     public static partial class Create
     {
@@ -42,7 +42,7 @@ namespace BH.Engine.iAuditor
 
         public static GetRequest iAuditorRequest(string apiCommand, string bearerToken, CustomObject parameters = null)
         {
-            return new BH.oM.HTTP.GetRequest
+            return new BH.oM.Adapters.HTTP.GetRequest
             {
                 BaseUrl = "https://api.safetyculture.io/" + apiCommand,
                 Headers = new Dictionary<string, object>()

@@ -30,8 +30,8 @@ using System.Net.Http;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
-using BH.oM.HTTP;
-using BH.Engine.HTTP;
+using BH.oM.Adapters.HTTP;
+using BH.Engine.Adapters.HTTP;
 using BH.oM.Geometry;
 using BH.Engine.Reflection;
 using System.Collections;
@@ -119,9 +119,9 @@ namespace BH.Adapter.iAuditor
                         List<object> mediaObjs = items[i].PropertyValue("media") as List<object>;
                         foreach (object mediaObj in mediaObjs)
                         {
-                            GetRequest getMediaRequest = BH.Engine.iAuditor.Create.iAuditorRequest("audits/" + auditID + @"/media/" + mediaObj.PropertyValue("media_id").ToString(), bearerToken);
+                            GetRequest getMediaRequest = BH.Engine.Adapters.iAuditor.Create.iAuditorRequest("audits/" + auditID + @"/media/" + mediaObj.PropertyValue("media_id").ToString(), bearerToken);
                             string reqString = getMediaRequest.ToUrlString();
-                            byte[] response = BH.Engine.HTTP.Compute.MakeRequestBinary(getMediaRequest);
+                            byte[] response = BH.Engine.Adapters.HTTP.Compute.MakeRequestBinary(getMediaRequest);
                             File.WriteAllBytes(targetPath + @"/" + mediaObj.PropertyValue("media_id").ToString() + "." + mediaObj.PropertyValue("file_ext").ToString(), response);
                         }
                     }
