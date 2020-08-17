@@ -7,7 +7,7 @@
     <ProjectGuid>{0E328721-467B-4A00-A4E4-64B79E073B5A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.oM.iAuditor</RootNamespace>
+    <RootNamespace>BH.oM.Adapters.iAuditor</RootNamespace>
     <AssemblyName>iAuditor_oM</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
