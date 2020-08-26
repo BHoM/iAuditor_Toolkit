@@ -29,10 +29,10 @@ using BH.Adapter.iAuditor;
 using BH.oM.Base;
 using BH.oM.Adapter;
 using BH.oM.Adapter.iAuditor;
-using BH.oM.iAuditor;
-using BH.oM.HTTP;
-using BH.Engine.HTTP;
-using BH.Engine.iAuditor;
+using BH.oM.Adapters.iAuditor;
+using BH.oM.Adapters.HTTP;
+using BH.Engine.Adapters.HTTP;
+using BH.Engine.Adapters.iAuditor;
 using BH.Adapter;
 using BH.Engine.Serialiser;
 using BH.Engine.Reflection;
@@ -103,13 +103,13 @@ namespace BH.Adapter.iAuditor
             if (id == null)
             {
                 Engine.Reflection.Compute.RecordError("No audit ID provided. Please provide an audit ID using an iAuditorConfig ActionConfig.");
-                return new List<BH.oM.iAuditor.Audit>();
+                return new List<BH.oM.Adapters.iAuditor.Audit>();
             }
             else
-            { getRequest = BH.Engine.iAuditor.Create.iAuditorRequest("audits/" + id, m_bearerToken); }
+            { getRequest = BH.Engine.Adapters.iAuditor.Create.iAuditorRequest("audits/" + id, m_bearerToken); }
 
             string reqString = getRequest.ToUrlString();
-            string response = BH.Engine.HTTP.Compute.MakeRequest(getRequest);
+            string response = BH.Engine.Adapters.HTTP.Compute.MakeRequest(getRequest);
             List<object> responseObjs = null;
             if (response == null)
             {

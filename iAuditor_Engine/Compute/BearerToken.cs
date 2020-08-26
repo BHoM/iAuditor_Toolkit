@@ -31,7 +31,7 @@ using System.ComponentModel;
 using System.Web;
 using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.iAuditor
+namespace BH.Engine.Adapters.iAuditor
 {
     public static partial class Compute
     {
