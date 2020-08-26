@@ -106,7 +106,7 @@ namespace BH.Adapter.iAuditor
                 return new List<BH.oM.Adapters.iAuditor.Audit>();
             }
             else
-            { getRequest = BH.Engine.Adapters.iAuditor.Create.iAuditorRequest("audits/" + id, m_bearerToken); }
+            { getRequest = BH.Engine.Adapters.iAuditor.Create.IAuditorRequest("audits/" + id, m_bearerToken); }
 
             string reqString = getRequest.ToUrlString();
             string response = BH.Engine.Adapters.HTTP.Compute.MakeRequest(getRequest);
