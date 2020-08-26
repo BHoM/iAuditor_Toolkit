@@ -40,7 +40,7 @@ namespace BH.Engine.Adapters.iAuditor
         [Input("parameters", "An optional CustomObject with properties representing parameters to create the GetRequest with (ie count, name_like, etc)")]
         [Output("GetRequest", "A GetRequest with CarbonQueryDatabase specific headers and uri")]
 
-        public static GetRequest iAuditorRequest(string apiCommand, string bearerToken, CustomObject parameters = null)
+        public static GetRequest IAuditorRequest(string apiCommand, string bearerToken, CustomObject parameters = null)
         {
             return new BH.oM.Adapters.HTTP.GetRequest
             {
