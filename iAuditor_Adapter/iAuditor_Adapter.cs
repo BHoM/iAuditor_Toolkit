@@ -31,7 +31,7 @@ using System.Net;
 using System.Net.Http;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
-using BH.Engine.iAuditor;
+using BH.Engine.Adapters.iAuditor;
 
 namespace BH.Adapter.iAuditor
 {

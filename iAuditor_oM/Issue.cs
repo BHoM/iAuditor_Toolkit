@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using BH.oM.Base;
 
 
-namespace BH.oM.iAuditor
+namespace BH.oM.Adapters.iAuditor
 {
 
     [Description("An issue belonging to an audit")]

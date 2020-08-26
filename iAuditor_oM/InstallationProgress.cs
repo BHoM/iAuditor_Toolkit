@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using BH.oM.Base;
 
 
-namespace BH.oM.iAuditor
+namespace BH.oM.Adapters.iAuditor
 {
 
     [Description("Installation progress for a single audit, please include image filepaths as applicable")]
