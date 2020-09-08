@@ -29,7 +29,6 @@ using BH.Adapter.iAuditor;
 using BH.oM.Base;
 using BH.oM.Adapter;
 using BH.oM.Inspection;
-using BH.oM.Adapter.iAuditor;
 using BH.oM.Adapters.iAuditor;
 using BH.oM.Adapters.HTTP;
 using BH.Engine.Adapters.HTTP;
