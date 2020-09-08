@@ -345,11 +345,14 @@ namespace BH.Adapter.iAuditor
                 {
                     description = (commentElems[i].PropertyValue("responses.text")?.ToString() ?? "");
                 }
-                else if (commentElems[i].PropertyValue("type").ToString().Contains("media"))
+                else if (commentElems[i].PropertyValue("type").ToString().Contains("media") && Query.PropertyNames(commentElems[i]).Contains("media"))
                 {
                     List<object> mediaObjs = commentElems[i].PropertyValue("media") as List<object>;
-                    List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
-                    mediaCos.ForEach(x => media.Add(ToMedia(x, auditCustomObject, targetPath, includeAssetFiles)));
+                    if (mediaObjs != null)
+                    {
+                        List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
+                        mediaCos.ForEach(x => media.Add(ToMedia(x, auditCustomObject, targetPath, includeAssetFiles)));
+                    }                  
                 }
             }
 
