@@ -28,8 +28,9 @@ using System.Linq;
 using BH.Adapter.iAuditor;
 using BH.oM.Base;
 using BH.oM.Adapter;
-using BH.oM.Adapters.iAuditor;
 using BH.oM.Inspection;
+using BH.oM.Adapter.iAuditor;
+using BH.oM.Adapters.iAuditor;
 using BH.oM.Adapters.HTTP;
 using BH.Engine.Adapters.HTTP;
 using BH.Engine.Adapters.iAuditor;
@@ -106,7 +107,7 @@ namespace BH.Adapter.iAuditor
                 return new List<BH.oM.Inspection.Audit>();
             }
             else
-            { getRequest = BH.Engine.Adapters.iAuditor.Create.iAuditorRequest("audits/" + id, m_bearerToken); }
+            { getRequest = BH.Engine.Adapters.iAuditor.Create.IAuditorRequest("audits/" + id, m_bearerToken); }
 
             string reqString = getRequest.ToUrlString();
             string response = BH.Engine.Adapters.HTTP.Compute.MakeRequest(getRequest);
