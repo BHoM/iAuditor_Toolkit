@@ -258,6 +258,7 @@ namespace BH.Adapter.iAuditor
         {
             List<Issue> issues = new List<Issue>();
             List<string> commentIDs = new List<string>();
+            int issueCounter = 1;
 
             if (obj.PropertyValue("items") != null)
             {
@@ -276,8 +277,9 @@ namespace BH.Adapter.iAuditor
                 {
                     if (commentIDs.Contains(items[i].PropertyValue("item_id").ToString()) && items[i].PropertyValue("type").ToString() == "element")
                     {
-                        Issue issue = ToIssue(items[i] as CustomObject, obj, targetPath, includeAssetFiles);
+                        Issue issue = ToIssue(items[i] as CustomObject, obj, issueCounter, targetPath, includeAssetFiles);
                         issues.Add(issue);
+                        issueCounter += 1;
                     }
                 }
             }
@@ -286,7 +288,7 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, string targetPath, bool includeAssetFiles = true)
+        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, int issueNo, string targetPath, bool includeAssetFiles = true)
         {
             List<object> commentElems = new List<object>();
             List<string> commentElemIDs = new List<string>();
@@ -298,6 +300,22 @@ namespace BH.Adapter.iAuditor
             string status = "";
             string assign = "";
             string description = "";
+            string visitNo = "00";
+
+            // Get audit number to add to issue number for issue tracking
+            if (auditCustomObject.PropertyValue("header_items") != null)
+            {
+                List<object> auditItems = auditCustomObject.PropertyValue("header_items") as List<object>;
+                for (int i = 0; i < auditItems.Count(); i++)
+                {
+                    if (auditItems[i].PropertyValue("label").ToString() == "Site Visit No.")
+                    {
+                        visitNo = auditItems[i].PropertyValue("responses.text")?.ToString();
+                    }
+                }
+            }
+            string issueNumber = visitNo.PadLeft(2, '0') + "." + issueNo.ToString().PadLeft(2, '0');
+
             for (int i = 0; i < items.Count(); i++)
             {
                 if (commentElemIDs.Contains(items[i].PropertyValue("item_id").ToString()))
@@ -338,6 +356,7 @@ namespace BH.Adapter.iAuditor
             Issue issue = new Issue
             {
                 Description = description,
+                IssueNumber = issueNumber,
                 Priority = priority,
                 Status = status,
                 Assign = assign,

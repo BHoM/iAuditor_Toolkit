@@ -46,13 +46,12 @@ namespace BH.Adapter.iAuditor
         [Input("password", "Provide iAuditor Password")]
         [Input("token", "Provide iAuditor token instead of username and pw")]
         [Output("adapter", "Adapter results")]
-        public iAuditorAdapter(string username = "", string password = "", string token = "", bool active = false)
+        public iAuditorAdapter(string username = "", string password = "", string token = null, bool active = false)
         {
             AdapterIdName = "iAuditorAdapter";
             if (active)
             {
-                //m_bearerToken = Compute.BearerToken(username, password);
-                m_bearerToken = token;
+                m_bearerToken = token ?? Compute.BearerToken(username, password);
             }
         }
 
