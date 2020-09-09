@@ -60,7 +60,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Inspection_oM">
-      <HintPath>..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Inspection_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Inspection_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
