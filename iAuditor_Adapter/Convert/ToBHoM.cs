@@ -243,7 +243,7 @@ namespace BH.Adapter.iAuditor
                 } 
             }
 
-            //TODO media from install progress objects dependent on iAuditor Template Fix
+
 
             string area = obj.PropertyValue("responses.text")?.ToString() ?? "";
             InstallationProgress installProgObj = new InstallationProgress
@@ -303,8 +303,9 @@ namespace BH.Adapter.iAuditor
             string assign = "";
             string description = "";
             string visitNo = "00";
+            DateTime issueDate = new DateTime();
 
-            // Get audit number to add to issue number for issue tracking
+            // Get audit number to add to issue number for issue tracking and audit issued date
             if (auditCustomObject.PropertyValue("header_items") != null)
             {
                 List<object> auditItems = auditCustomObject.PropertyValue("header_items") as List<object>;
@@ -313,6 +314,11 @@ namespace BH.Adapter.iAuditor
                     if (auditItems[i].PropertyValue("label").ToString() == "Site Visit No.")
                     {
                         visitNo = auditItems[i].PropertyValue("responses.text")?.ToString();
+                    }
+                    else if (items[i].PropertyValue("label").ToString() == "Date of issue")
+                    {
+                        string issueDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        DateTime.TryParse(issueDateString, out issueDate);
                     }
                 }
             }
@@ -361,6 +367,7 @@ namespace BH.Adapter.iAuditor
             Issue issue = new Issue
             {
                 Description = description,
+                IssueDate = issueDate,
                 IssueNumber = issueNumber,
                 Priority = priority,
                 Status = status,
