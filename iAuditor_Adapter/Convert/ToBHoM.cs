@@ -367,7 +367,7 @@ namespace BH.Adapter.iAuditor
             Issue issue = new Issue
             {
                 Description = description,
-                IssueDate = issueDate,
+                DateCreated = issueDate,
                 IssueNumber = issueNumber,
                 Priority = priority,
                 Status = status,
