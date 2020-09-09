@@ -383,7 +383,8 @@ namespace BH.Adapter.iAuditor
                 Priority = priority,
                 Status = status,
                 Assign = assign,
-                Media = media
+                Media = media,
+                Name = issueNumber
             };
                 return issue;
         }
