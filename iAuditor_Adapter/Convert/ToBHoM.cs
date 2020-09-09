@@ -218,7 +218,7 @@ namespace BH.Adapter.iAuditor
                 {
                     if (items[i].PropertyValue("label").ToString() == @"Elevation / area" && items[i].PropertyNames().Contains("responses"))
                     {
-                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, obj);
+                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, obj, i); // item count used to get adjacent media entry that follows,
                         installProgList.Add(installObject);
                     }
                 }
@@ -228,9 +228,12 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject)
+        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject, int itemNumber)
         {
             string generalStatus = "";
+            List<string> media = new List<string>();
+
+            // Get General status from audit, and media label from entry following installation progress description entry
             if (auditCustomObject.PropertyValue("items") != null)
             {
                 List<object> items = auditCustomObject.PropertyValue("items") as List<object>;
@@ -240,16 +243,24 @@ namespace BH.Adapter.iAuditor
                     {
                         generalStatus = items[i].PropertyValue("responses.text")?.ToString() ?? "";
                     }
-                } 
+                }
+                if (items[itemNumber + 1].PropertyValue("type").ToString().Contains("media") && Query.PropertyNames(items[itemNumber + 1]).Contains("media"))
+                {
+                    List<object> mediaObjs = items[itemNumber + 1].PropertyValue("media") as List<object>;
+                    if (mediaObjs != null)
+                    {
+                        List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
+                        mediaCos.ForEach(x => media.Add(ToMedia(x)));
+                    }
+                }
             }
-
-
 
             string area = obj.PropertyValue("responses.text")?.ToString() ?? "";
             InstallationProgress installProgObj = new InstallationProgress
             {
                 Status = generalStatus,
-                Area = area
+                Area = area,
+                Media = media
             };
             return installProgObj;
         }
@@ -359,7 +370,7 @@ namespace BH.Adapter.iAuditor
                     if (mediaObjs != null)
                     {
                         List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
-                        mediaCos.ForEach(x => media.Add(ToMedia(x, auditCustomObject, targetPath, includeAssetFiles)));
+                        mediaCos.ForEach(x => media.Add(ToMedia(x)));
                     }                  
                 }
             }
@@ -379,7 +390,7 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static string ToMedia(this CustomObject obj, CustomObject auditCustomObject, string targetPath, bool includeAssetFiles = true)
+        public static string ToMedia(this CustomObject obj)
         {
             string media;
             string mediaID = obj.PropertyValue("media_id") as string;
