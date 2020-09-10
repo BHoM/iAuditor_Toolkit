@@ -311,7 +311,7 @@ namespace BH.Adapter.iAuditor
             List<string> media = new List<string>();
             string priority = "";
             string status = "";
-            string assign = "";
+            List<string> assign = new List<string>();
             string description = "";
             string visitNo = "00";
             DateTime issueDate = new DateTime();
@@ -358,7 +358,7 @@ namespace BH.Adapter.iAuditor
                 else if (commentElems[i].PropertyValue("label").ToString() == "Assign")
                 {
                     List<object> vals = commentElems[i].PropertyValue("responses.selected") as List<object>;
-                    assign = vals[0].PropertyValue("label").ToString();
+                    assign.Add(vals[0].PropertyValue("label").ToString());
                 }
                 else if (commentElems[i].PropertyValue("label").ToString().Contains("description"))
                 {
