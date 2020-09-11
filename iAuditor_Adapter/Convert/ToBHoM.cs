@@ -32,10 +32,12 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
 using BH.oM.Adapters.HTTP;
 using BH.Engine.Adapters.HTTP;
+using BH.oM.Geometry;
 using BH.Engine.Reflection;
 using System.Collections;
 using System.IO;
 using BH.Engine.Units;
+using BH.oM.Inspection;
 using BH.oM.Adapters.iAuditor;
 
 namespace BH.Adapter.iAuditor
@@ -52,8 +54,12 @@ namespace BH.Adapter.iAuditor
             int visitNo = 0;
             int revNo = 0;
             string client = "";
-            string inspectionDate = "";
-            string issueDate = "";
+            string inspectionDateString = "";
+            DateTime inspectionDate = new DateTime();
+            DateTime inspectionDateUtc = new DateTime();
+            string issueDateString = "";
+            DateTime issueDate = new DateTime();
+            DateTime issueDateUtc = new DateTime();
             string author = "";
             string jobLeader = "";
             string title = "";
@@ -114,6 +120,7 @@ namespace BH.Adapter.iAuditor
                         List<object> mediaObjs = items[i].PropertyValue("media") as List<object>;
                         foreach (object mediaObj in mediaObjs)
                         {
+
                             GetRequest getMediaRequest = BH.Engine.Adapters.iAuditor.Create.IAuditorRequest("audits/" + auditID + @"/media/" + mediaObj.PropertyValue("media_id").ToString(), bearerToken);
                             string reqString = getMediaRequest.ToUrlString();
                             byte[] response = BH.Engine.Adapters.HTTP.Compute.MakeRequestBinary(getMediaRequest);
@@ -150,11 +157,15 @@ namespace BH.Adapter.iAuditor
                     }
                     else if (items[i].PropertyValue("label").ToString() == "Date of issue")
                     {
-                        issueDate = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        issueDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        DateTime.TryParse(issueDateString, out issueDate);
+                        issueDateUtc = issueDate;
                     }
                     else if (items[i].PropertyValue("label").ToString() == "Date of inspection")
                     {
-                        inspectionDate = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        inspectionDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        DateTime.TryParse(issueDateString, out inspectionDate);
+                        inspectionDateUtc = inspectionDate;
                     }
                     else if (items[i].PropertyValue("label").ToString() == "Revision no.")
                     {
@@ -177,9 +188,11 @@ namespace BH.Adapter.iAuditor
                 ProjectNumber = projectNumber,
                 JobLeader = jobLeader,
                 Name = obj.PropertyValue("audit_data.name")?.ToString() ?? "",
-                RevisionNumber = revNo,
-                IssueDate = issueDate,
+                RevisionNumber = revNo,       
                 InspectionDate = inspectionDate,
+                InspectionDateUtc = inspectionDateUtc,
+                IssueDate = issueDate,
+                IssueDateUtc = issueDateUtc,
                 Distribution = distribution,
                 Attendance = attendance,
                 VisitPurpose = purpose,
@@ -205,7 +218,7 @@ namespace BH.Adapter.iAuditor
                 {
                     if (items[i].PropertyValue("label").ToString() == @"Elevation / area" && items[i].PropertyNames().Contains("responses"))
                     {
-                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, obj);
+                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, obj, i); // item count used to get adjacent media entry that follows,
                         installProgList.Add(installObject);
                     }
                 }
@@ -215,9 +228,12 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject)
+        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject, int itemNumber)
         {
             string generalStatus = "";
+            List<string> media = new List<string>();
+
+            // Get General status from audit, and media label from entry following installation progress description entry
             if (auditCustomObject.PropertyValue("items") != null)
             {
                 List<object> items = auditCustomObject.PropertyValue("items") as List<object>;
@@ -227,16 +243,24 @@ namespace BH.Adapter.iAuditor
                     {
                         generalStatus = items[i].PropertyValue("responses.text")?.ToString() ?? "";
                     }
-                } 
+                }
+                if (items[itemNumber + 1].PropertyValue("type").ToString().Contains("media") && Query.PropertyNames(items[itemNumber + 1]).Contains("media"))
+                {
+                    List<object> mediaObjs = items[itemNumber + 1].PropertyValue("media") as List<object>;
+                    if (mediaObjs != null)
+                    {
+                        List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
+                        mediaCos.ForEach(x => media.Add(ToMedia(x)));
+                    }
+                }
             }
-
-            //TODO media from install progress objects dependent on iAuditor Template Fix
 
             string area = obj.PropertyValue("responses.text")?.ToString() ?? "";
             InstallationProgress installProgObj = new InstallationProgress
             {
                 Status = generalStatus,
-                Area = area
+                Area = area,
+                Media = media
             };
             return installProgObj;
         }
@@ -247,6 +271,7 @@ namespace BH.Adapter.iAuditor
         {
             List<Issue> issues = new List<Issue>();
             List<string> commentIDs = new List<string>();
+            int issueCounter = 1;
 
             if (obj.PropertyValue("items") != null)
             {
@@ -265,8 +290,9 @@ namespace BH.Adapter.iAuditor
                 {
                     if (commentIDs.Contains(items[i].PropertyValue("item_id").ToString()) && items[i].PropertyValue("type").ToString() == "element")
                     {
-                        Issue issue = ToIssue(items[i] as CustomObject, obj, targetPath, includeAssetFiles);
+                        Issue issue = ToIssue(items[i] as CustomObject, obj, issueCounter, targetPath, includeAssetFiles);
                         issues.Add(issue);
+                        issueCounter += 1;
                     }
                 }
             }
@@ -275,7 +301,7 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, string targetPath, bool includeAssetFiles = true)
+        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, int issueNo, string targetPath, bool includeAssetFiles = true)
         {
             List<object> commentElems = new List<object>();
             List<string> commentElemIDs = new List<string>();
@@ -285,8 +311,30 @@ namespace BH.Adapter.iAuditor
             List<string> media = new List<string>();
             string priority = "";
             string status = "";
-            string assign = "";
+            List<string> assign = new List<string>();
             string description = "";
+            string visitNo = "00";
+            DateTime issueDate = new DateTime();
+
+            // Get audit number to add to issue number for issue tracking and audit issued date
+            if (auditCustomObject.PropertyValue("header_items") != null)
+            {
+                List<object> auditItems = auditCustomObject.PropertyValue("header_items") as List<object>;
+                for (int i = 0; i < auditItems.Count(); i++)
+                {
+                    if (auditItems[i].PropertyValue("label").ToString() == "Site Visit No.")
+                    {
+                        visitNo = auditItems[i].PropertyValue("responses.text")?.ToString();
+                    }
+                    else if (items[i].PropertyValue("label").ToString() == "Date of issue")
+                    {
+                        string issueDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        DateTime.TryParse(issueDateString, out issueDate);
+                    }
+                }
+            }
+            string issueNumber = visitNo.PadLeft(2, '0') + "." + issueNo.ToString().PadLeft(2, '0');
+
             for (int i = 0; i < items.Count(); i++)
             {
                 if (commentElemIDs.Contains(items[i].PropertyValue("item_id").ToString()))
@@ -310,34 +358,40 @@ namespace BH.Adapter.iAuditor
                 else if (commentElems[i].PropertyValue("label").ToString() == "Assign")
                 {
                     List<object> vals = commentElems[i].PropertyValue("responses.selected") as List<object>;
-                    assign = vals[0].PropertyValue("label").ToString();
+                    assign.Add(vals[0].PropertyValue("label").ToString());
                 }
                 else if (commentElems[i].PropertyValue("label").ToString().Contains("description"))
                 {
                     description = (commentElems[i].PropertyValue("responses.text")?.ToString() ?? "");
                 }
-                else if (commentElems[i].PropertyValue("type").ToString().Contains("media"))
+                else if (commentElems[i].PropertyValue("type").ToString().Contains("media") && Query.PropertyNames(commentElems[i]).Contains("media"))
                 {
                     List<object> mediaObjs = commentElems[i].PropertyValue("media") as List<object>;
-                    List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
-                    mediaCos.ForEach(x => media.Add(ToMedia(x, auditCustomObject, targetPath, includeAssetFiles)));
+                    if (mediaObjs != null)
+                    {
+                        List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
+                        mediaCos.ForEach(x => media.Add(ToMedia(x)));
+                    }                  
                 }
             }
 
             Issue issue = new Issue
             {
                 Description = description,
+                DateCreated = issueDate,
+                IssueNumber = issueNumber,
                 Priority = priority,
                 Status = status,
                 Assign = assign,
-                Media = media
+                Media = media,
+                Name = issueNumber
             };
                 return issue;
         }
 
         /***************************************************/
 
-        public static string ToMedia(this CustomObject obj, CustomObject auditCustomObject, string targetPath, bool includeAssetFiles = true)
+        public static string ToMedia(this CustomObject obj)
         {
             string media;
             string mediaID = obj.PropertyValue("media_id") as string;
