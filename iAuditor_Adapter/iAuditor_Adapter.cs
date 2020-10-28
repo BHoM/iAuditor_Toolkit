@@ -48,7 +48,6 @@ namespace BH.Adapter.iAuditor
         [Output("adapter", "Adapter results")]
         public iAuditorAdapter(string username = "", string password = "", string token = null, bool active = false)
         {
-            AdapterIdName = "iAuditorAdapter";
             if (active)
             {
                 m_bearerToken = token ?? Compute.BearerToken(username, password);
