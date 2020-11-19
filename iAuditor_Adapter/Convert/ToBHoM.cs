@@ -314,6 +314,7 @@ namespace BH.Adapter.iAuditor
             string type = "";
             List<string> assign = new List<string>();
             string description = "";
+            string issueDateString = "";
             string visitNo = "00";
             DateTime issueDate = new DateTime();
 
@@ -327,9 +328,9 @@ namespace BH.Adapter.iAuditor
                     {
                         visitNo = auditItems[i].PropertyValue("responses.text")?.ToString();
                     }
-                    else if (items[i].PropertyValue("label").ToString() == "Date of issue")
+                    else if (auditItems[i].PropertyValue("label").ToString() == "Date of issue")
                     {
-                        string issueDateString = (items[i].PropertyValue("responses.datetime")?.ToString() ?? "");
+                        issueDateString = (auditItems[i].PropertyValue("responses.datetime")?.ToString() ?? "");
                         DateTime.TryParse(issueDateString, out issueDate);
                     }
                 }
