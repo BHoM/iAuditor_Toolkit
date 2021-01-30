@@ -204,7 +204,7 @@ namespace BH.Adapter.iAuditor
                 VisitPurpose = purpose,
                 AreasInspected = areas,
                 InstallationProgressObjects = installProgress,
-                Issues = issues,
+                IssueNumbers = issueIDs,
                 Score = obj.PropertyValue("audit_data.score_percentage")?.ToString() ?? "",
             };
 
