@@ -62,7 +62,7 @@ namespace BH.Adapter.iAuditor
         /***************************************************/
         /**** Private specific read methods             ****/
         /***************************************************/
-        private List<Audit> ReadAudit(List<string> ids = null, iAuditorConfig config = null)
+        private List<List<BHoMObject>> ReadAudit(List<string> ids = null, iAuditorConfig config = null)
         {
             //Add parameters per config
             CustomObject requestParams = new CustomObject();
@@ -103,7 +103,7 @@ namespace BH.Adapter.iAuditor
             if (id == null)
             {
                 Engine.Reflection.Compute.RecordError("No audit ID provided. Please provide an audit ID using an iAuditorConfig ActionConfig.");
-                return new List<BH.oM.Inspection.Audit>();
+                return null;
             }
             else
             { getRequest = BH.Engine.Adapters.iAuditor.Create.IAuditorRequest("audits/" + id, m_bearerToken); }
@@ -134,8 +134,8 @@ namespace BH.Adapter.iAuditor
                 return null;
             }
 
-            //Convert nested customObject from serialization to list of epdData objects
-            List<Audit> audits = new List<Audit>();
+            //Convert nested customObject from serialization to lists of audits and issues
+            List<List<BHoMObject>> auditsAndIssues = new List<List<BHoMObject>>();
 
             object auditObjects = Engine.Reflection.Query.PropertyValue(responseObjs[0], "Objects");
 
@@ -144,12 +144,12 @@ namespace BH.Adapter.iAuditor
             {
                 foreach (CustomObject co in objList)
                 {
-                    Audit audit = Convert.ToAudit(co, m_bearerToken, targetPath, includeAssetFiles);
-                    audits.Add(audit);
+                    List<BHoMObject> auditAndIssues = Convert.ToAudit(co, m_bearerToken, targetPath, includeAssetFiles);
+                    auditsAndIssues.Add(auditAndIssues);
                 }
             }
 
-            return audits;
+            return auditsAndIssues;
         }
 
     }
