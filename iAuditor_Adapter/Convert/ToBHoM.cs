@@ -48,7 +48,7 @@ namespace BH.Adapter.iAuditor
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static List<BHoMObject> ToAudit(this CustomObject obj, string bearerToken, string targetPath, bool includeAssetFiles = true)
+        public static Audit ToAudit(this CustomObject obj, string targetPath, string bearerToken, bool includeAssetFiles = true)
         {
             List<BHoMObject> auditAndIssues = new List<BHoMObject>();
             string projectNumber = "";
@@ -176,7 +176,7 @@ namespace BH.Adapter.iAuditor
             }
 
             installProgress = obj.ToInstallationProgressObjects();
-            issues = obj.ToIssues(targetPath, includeAssetFiles);
+            issues = obj.ToIssues(targetPath, false);
             List<string> issueIDs = new List<string>();
             foreach (Issue issue in issues)
             {
@@ -208,10 +208,7 @@ namespace BH.Adapter.iAuditor
                 Score = obj.PropertyValue("audit_data.score_percentage")?.ToString() ?? "",
             };
 
-            auditAndIssues.Add(audit);
-            auditAndIssues.AddRange(issues);
-
-            return auditAndIssues;
+            return audit;
         }
 
         /***************************************************/
@@ -317,7 +314,7 @@ namespace BH.Adapter.iAuditor
             List<object> commentIDList = obj.PropertyValue("children") as List<object>;
             commentIDList.ForEach(x => commentElemIDs.Add(x.ToString()));
             List<object> items = auditCustomObject.PropertyValue("items") as List<object>;
-            string auditID = obj.PropertyValue("audit_id")?.ToString() ?? "";
+            string auditID = auditCustomObject.PropertyValue("audit_id")?.ToString() ?? "";
 
             List<string> media = new List<string>();
             string priority = "";

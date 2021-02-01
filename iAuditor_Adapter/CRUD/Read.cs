@@ -44,6 +44,7 @@ namespace BH.Adapter.iAuditor
         /***************************************************/
         /**** Adapter overload method                   ****/
         /***************************************************/
+
         protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
         {
             dynamic elems = null;
@@ -55,14 +56,54 @@ namespace BH.Adapter.iAuditor
             //Choose what to pull out depending on the type.
             if (type == typeof(Audit))
                 elems = ReadAudit(ids as dynamic, config);
+            else if (type == typeof(Issue))
+                elems = ReadIssues(ids as dynamic, config);
 
             return elems;
         }
 
+
         /***************************************************/
         /**** Private specific read methods             ****/
         /***************************************************/
-        private List<List<BHoMObject>> ReadAudit(List<string> ids = null, iAuditorConfig config = null)
+
+        private List<Audit> ReadAudit(List<string> ids = null, iAuditorConfig config = null)
+        {
+            List<Audit> audits = new List<Audit>();
+
+            object requestResponseObject = GetAPIResponseObject(config);
+            CustomObject co = requestResponseObject as CustomObject;
+            if (co != null)
+            {
+                    Audit audit = Convert.ToAudit(co, config.AssetFilePath, m_bearerToken, config.IncludeAssetFiles);
+                    audits.Add(audit);
+            }
+
+            return audits;
+        }
+
+
+        /***************************************************/
+
+        private List<Issue> ReadIssues(List<string> ids = null, iAuditorConfig config = null)
+        {
+            List<Issue> issues = new List<Issue>();
+
+            object requestResponseObject = GetAPIResponseObject(config);
+            CustomObject co = requestResponseObject as CustomObject;
+            if (co != null)
+            {
+                    List<Issue> issueList = Convert.ToIssues(co, config.AssetFilePath, config.IncludeAssetFiles);
+                    issues.AddRange(issueList);
+            }
+
+            return issues;
+        }
+
+
+        /***************************************************/
+
+        private object GetAPIResponseObject(iAuditorConfig config = null)
         {
             //Add parameters per config
             CustomObject requestParams = new CustomObject();
@@ -79,13 +120,13 @@ namespace BH.Adapter.iAuditor
                 {
                     //Filepath handling to create or direct to provided relevant directory 
                     try
-                    {                       
+                    {
                         if (File.Exists(targetPath))
                         {
                             targetPath = Path.GetFullPath(targetPath);
                             FileAttributes attr = File.GetAttributes(targetPath);
                             if (attr.HasFlag(FileAttributes.Directory) == false)
-                                targetPath = Path.GetDirectoryName(targetPath);    
+                                targetPath = Path.GetDirectoryName(targetPath);
                         }
                         Directory.CreateDirectory(targetPath);
                     }
@@ -94,7 +135,7 @@ namespace BH.Adapter.iAuditor
                         targetPath = @"C:\BHoM\iAuditorAssets";
                         Directory.CreateDirectory(targetPath);
                         BH.Engine.Reflection.Compute.RecordWarning("Path is invalid, does not exist, or was not provided. Using " + targetPath + " as target path for assets. The target path must be an already existing folder in our environment.");
-                    }                   
+                    }
                 }
             }
 
@@ -121,11 +162,11 @@ namespace BH.Adapter.iAuditor
             else if (response.StartsWith("{"))
             {
                 response = "[" + response + "]";
-                responseObjs = new List<object>() { Engine.Serialiser.Convert.FromJson(response) };
+                responseObjs = new List<object>() { Engine.Serialiser.Convert.FromJsonArray(response) };
             }
             else if (response.StartsWith("["))
             {
-                responseObjs = new List<object>() { Engine.Serialiser.Convert.FromJson(response) };
+                responseObjs = new List<object>() { Engine.Serialiser.Convert.FromJsonArray(response) };
             }
 
             else
@@ -134,23 +175,11 @@ namespace BH.Adapter.iAuditor
                 return null;
             }
 
-            //Convert nested customObject from serialization to lists of audits and issues
-            List<List<BHoMObject>> auditsAndIssues = new List<List<BHoMObject>>();
+            List<object> responseObjList = responseObjs[0] as List<object>;
 
-            object auditObjects = Engine.Reflection.Query.PropertyValue(responseObjs[0], "Objects");
-
-            IEnumerable objList = auditObjects as IEnumerable;
-            if (objList != null)
-            {
-                foreach (CustomObject co in objList)
-                {
-                    List<BHoMObject> auditAndIssues = Convert.ToAudit(co, m_bearerToken, targetPath, includeAssetFiles);
-                    auditsAndIssues.Add(auditAndIssues);
-                }
-            }
-
-            return auditsAndIssues;
+            return responseObjList[0];
         }
+
 
     }
 

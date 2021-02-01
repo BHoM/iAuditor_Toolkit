@@ -52,6 +52,10 @@ namespace BH.Adapter.iAuditor
             {
                 m_bearerToken = token ?? Compute.BearerToken(username, password);
             }
+            else
+            {
+                m_bearerToken = null;
+            }
         }
 
         /***************************************************/
