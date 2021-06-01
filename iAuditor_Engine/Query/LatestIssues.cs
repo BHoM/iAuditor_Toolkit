@@ -39,7 +39,7 @@ namespace BH.Engine.Adapters.iAuditor
         [Description("Returns the latest unique instance of each Issue from a chronological list of Issues.")]
         [Input("allIssues", "All Issues, potentially including duplicates of modified Issues. This list is assumed to be chronological from oldest to newest.")]
         [Output("latestIssues", "The latest instance of each unique Issue included in the provided collection of Issues.")]
-        public static List<Issue> LatestIssues(List<Issue> allIssues)
+        public static List<Issue> LatestIssues(this List<Issue> allIssues)
         {
             allIssues.Reverse();
             List<Issue> result = allIssues
