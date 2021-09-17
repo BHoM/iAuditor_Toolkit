@@ -116,18 +116,6 @@ namespace BH.Adapter.iAuditor
                     {
                         title = (items[i].PropertyValue("responses.text")?.ToString() ?? "");
                     }
-                    else if (includeAssetFiles == true && items[i].PropertyValue("type").ToString() == "media" && Query.PropertyNames(items[i]).Contains("media"))
-                    {
-                        List<object> mediaObjs = items[i].PropertyValue("media") as List<object>;
-                        foreach (object mediaObj in mediaObjs)
-                        {
-
-                            GetRequest getMediaRequest = BH.Engine.Adapters.iAuditor.Create.IAuditorRequest("audits/" + auditID + @"/media/" + mediaObj.PropertyValue("media_id").ToString(), bearerToken);
-                            string reqString = getMediaRequest.ToUrlString();
-                            byte[] response = BH.Engine.Adapters.HTTP.Compute.MakeRequestBinary(getMediaRequest);
-                            File.WriteAllBytes(targetPath + @"/" + mediaObj.PropertyValue("media_id").ToString() + "." + mediaObj.PropertyValue("file_ext").ToString(), response);
-                        }
-                    }
                 }
             }
 
@@ -175,8 +163,8 @@ namespace BH.Adapter.iAuditor
                 }
             }
 
-            installProgress = obj.ToInstallationProgressObjects();
-            issues = obj.ToIssues(targetPath, false);
+            installProgress = obj.ToInstallationProgressObjects(includeAssetFiles, targetPath, bearerToken);
+            issues = obj.ToIssues(targetPath, bearerToken, false);
             List<string> issueIDs = new List<string>();
             foreach (Issue issue in issues)
             {
@@ -213,18 +201,18 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static List<InstallationProgress> ToInstallationProgressObjects(this CustomObject obj)
+        public static List<InstallationProgress> ToInstallationProgressObjects(this CustomObject auditObj, bool includeAssetFiles, string targetPath, string bearerToken)
         {
             List<InstallationProgress> installProgList = new List<InstallationProgress>();
 
-            if (obj.PropertyValue("items") != null)
+            if (auditObj.PropertyValue("items") != null)
             {
-                List<object> items = obj.PropertyValue("items") as List<object>;
+                List<object> items = auditObj.PropertyValue("items") as List<object>;
                 for (int i = 0; i < items.Count(); i++)
                 {
                     if (items[i].PropertyValue("label").ToString() == @"Elevation / area" && items[i].PropertyNames().Contains("responses"))
                     {
-                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, obj, i); // item count used to get adjacent media entry that follows,
+                        InstallationProgress installObject = ToInstallationProgress(items[i] as CustomObject, auditObj, i, includeAssetFiles, targetPath, bearerToken ); // item count used to get adjacent media entry that follows,
                         installProgList.Add(installObject);
                     }
                 }
@@ -234,10 +222,11 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject, int itemNumber)
+        public static InstallationProgress ToInstallationProgress(this CustomObject obj, CustomObject auditCustomObject, int itemNumber, bool includeAssetFiles, string targetPath, string bearerToken)
         {
             string generalStatus = "";
             List<string> media = new List<string>();
+            string auditID = auditCustomObject.PropertyValue("audit_id")?.ToString() ?? "";
 
             // Get General status from audit, and media label from entry following installation progress description entry
             if (auditCustomObject.PropertyValue("items") != null)
@@ -256,7 +245,7 @@ namespace BH.Adapter.iAuditor
                     if (mediaObjs != null)
                     {
                         List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
-                        mediaCos.ForEach(x => media.Add(ToMedia(x)));
+                        mediaCos.ForEach(x => media.Add(ToMedia(x, auditID, targetPath, includeAssetFiles, bearerToken)));
                     }
                 }
             }
@@ -273,7 +262,7 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static List<Issue> ToIssues(this CustomObject obj, string targetPath, bool includeAssetFiles = true)
+        public static List<Issue> ToIssues(this CustomObject obj, string targetPath, string bearerToken, bool includeAssetFiles = true)
         {
             List<Issue> issues = new List<Issue>();
             List<string> commentIDs = new List<string>();
@@ -296,7 +285,7 @@ namespace BH.Adapter.iAuditor
                 {
                     if (commentIDs.Contains(items[i].PropertyValue("item_id").ToString()) && items[i].PropertyValue("type").ToString() == "element")
                     {
-                        Issue issue = ToIssue(items[i] as CustomObject, obj, issueCounter, targetPath, includeAssetFiles);
+                        Issue issue = ToIssue(items[i] as CustomObject, obj, issueCounter, targetPath, includeAssetFiles, bearerToken);
                         issues.Add(issue);
                         issueCounter += 1;
                     }
@@ -307,7 +296,7 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, int issueNo, string targetPath, bool includeAssetFiles = true)
+        public static Issue ToIssue(this CustomObject obj, CustomObject auditCustomObject, int issueNo, string targetPath, bool includeAssetFiles, string bearerToken)
         {
             List<object> commentElems = new List<object>();
             List<string> commentElemIDs = new List<string>();
@@ -385,7 +374,7 @@ namespace BH.Adapter.iAuditor
                     if (mediaObjs != null)
                     {
                         List<CustomObject> mediaCos = mediaObjs.Select(x => (CustomObject)x).ToList();
-                        mediaCos.ForEach(x => media.Add(ToMedia(x)));
+                        mediaCos.ForEach(x => media.Add(ToMedia(x, auditID, targetPath, includeAssetFiles, bearerToken)));
                     }                  
                 }
             }
@@ -408,11 +397,19 @@ namespace BH.Adapter.iAuditor
 
         /***************************************************/
 
-        public static string ToMedia(this CustomObject obj)
+        public static string ToMedia(this CustomObject obj, string auditID, string targetPath, bool includeAssetFiles, string bearerToken)
         {
             string media;
             string mediaID = obj.PropertyValue("media_id") as string;
             string mediaExtension = obj.PropertyValue("file_ext") as string;
+
+            if (includeAssetFiles)
+            {
+                    GetRequest getMediaRequest = BH.Engine.Adapters.iAuditor.Create.IAuditorRequest("audits/" + auditID + @"/media/" + mediaID, bearerToken);
+                    string reqString = getMediaRequest.ToUrlString();
+                    byte[] response = BH.Engine.Adapters.HTTP.Compute.MakeRequestBinary(getMediaRequest);
+                    File.WriteAllBytes(targetPath + @"/" + mediaID + "." + mediaExtension, response);
+            }
 
             media = mediaID + "." + mediaExtension;
 

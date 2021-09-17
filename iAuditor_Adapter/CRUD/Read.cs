@@ -93,8 +93,8 @@ namespace BH.Adapter.iAuditor
             CustomObject co = requestResponseObject as CustomObject;
             if (co != null)
             {
-                    List<Issue> issueList = Convert.ToIssues(co, config.AssetFilePath, config.IncludeAssetFiles);
-                    issues.AddRange(issueList);
+                List<Issue> issueList = Convert.ToIssues(co, config.AssetFilePath, m_bearerToken, config.IncludeAssetFiles);
+                issues.AddRange(issueList);
             }
 
             return issues;
