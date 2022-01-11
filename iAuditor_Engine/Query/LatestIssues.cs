@@ -29,7 +29,7 @@ using System.Net;
 using System.Net.Http;
 using System.ComponentModel;
 using System.Web;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Inspection;
 
 namespace BH.Engine.Adapters.iAuditor

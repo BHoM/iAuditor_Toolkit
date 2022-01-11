@@ -134,7 +134,7 @@ namespace BH.Adapter.iAuditor
                     {
                         targetPath = @"C:\BHoM\iAuditorAssets";
                         Directory.CreateDirectory(targetPath);
-                        BH.Engine.Reflection.Compute.RecordWarning("Path is invalid, does not exist, or was not provided. Using " + targetPath + " as target path for assets. The target path must be an already existing folder in our environment.");
+                        BH.Engine.Base.Compute.RecordWarning("Path is invalid, does not exist, or was not provided. Using " + targetPath + " as target path for assets. The target path must be an already existing folder in our environment.");
                     }
                 }
             }
@@ -143,7 +143,7 @@ namespace BH.Adapter.iAuditor
             GetRequest getRequest;
             if (id == null)
             {
-                Engine.Reflection.Compute.RecordError("No audit ID provided. Please provide an audit ID using an iAuditorConfig ActionConfig.");
+                Engine.Base.Compute.RecordError("No audit ID provided. Please provide an audit ID using an iAuditorConfig ActionConfig.");
                 return null;
             }
             else
@@ -154,7 +154,7 @@ namespace BH.Adapter.iAuditor
             List<object> responseObjs = null;
             if (response == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No response received, check bearer token and connection.");
+                BH.Engine.Base.Compute.RecordWarning("No response received, check bearer token and connection.");
                 return null;
             }
 
@@ -171,7 +171,7 @@ namespace BH.Adapter.iAuditor
 
             else
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Response is not a valid JSON. How'd that happen?");
+                BH.Engine.Base.Compute.RecordWarning("Response is not a valid JSON. How'd that happen?");
                 return null;
             }
 
