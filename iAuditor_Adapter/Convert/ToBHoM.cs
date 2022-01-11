@@ -28,17 +28,18 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Base;
 using BH.oM.Adapters.HTTP;
 using BH.Engine.Adapters.HTTP;
 using BH.oM.Geometry;
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using System.Collections;
 using System.IO;
 using BH.Engine.Units;
 using BH.oM.Inspection;
 using BH.oM.Adapters.iAuditor;
+using BH.Engine.Reflection;
 
 namespace BH.Adapter.iAuditor
 {
@@ -116,7 +117,7 @@ namespace BH.Adapter.iAuditor
                     {
                         title = (items[i].PropertyValue("responses.text")?.ToString() ?? "");
                     }
-                    else if (includeAssetFiles == true && items[i].PropertyValue("type").ToString() == "media" && Query.PropertyNames(items[i]).Contains("media"))
+                    else if (includeAssetFiles == true && items[i].PropertyValue("type").ToString() == "media" && BH.Engine.Reflection.Query.PropertyNames(items[i]).Contains("media"))
                     {
                         List<object> mediaObjs = items[i].PropertyValue("media") as List<object>;
                         foreach (object mediaObj in mediaObjs)
@@ -250,7 +251,7 @@ namespace BH.Adapter.iAuditor
                         generalStatus = items[i].PropertyValue("responses.text")?.ToString() ?? "";
                     }
                 }
-                if (items[itemNumber + 1].PropertyValue("type").ToString().Contains("media") && Query.PropertyNames(items[itemNumber + 1]).Contains("media"))
+                if (items[itemNumber + 1].PropertyValue("type").ToString().Contains("media") && BH.Engine.Reflection.Query.PropertyNames(items[itemNumber + 1]).Contains("media"))
                 {
                     List<object> mediaObjs = items[itemNumber + 1].PropertyValue("media") as List<object>;
                     if (mediaObjs != null)
@@ -379,7 +380,7 @@ namespace BH.Adapter.iAuditor
                 {
                     description = (commentElems[i].PropertyValue("responses.text")?.ToString() ?? "");
                 }
-                else if (commentElems[i].PropertyValue("type").ToString().Contains("media") && Query.PropertyNames(commentElems[i]).Contains("media"))
+                else if (commentElems[i].PropertyValue("type").ToString().Contains("media") && BH.Engine.Reflection.Query.PropertyNames(commentElems[i]).Contains("media"))
                 {
                     List<object> mediaObjs = commentElems[i].PropertyValue("media") as List<object>;
                     if (mediaObjs != null)

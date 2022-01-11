@@ -23,7 +23,7 @@
 using BH.oM.Base;
 using System.Collections.Generic;
 using BH.oM.Adapters.HTTP;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Adapters.iAuditor
