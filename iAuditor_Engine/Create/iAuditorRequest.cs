@@ -50,7 +50,7 @@ namespace BH.Engine.Adapters.iAuditor
                     { "Authorization", "Bearer " +  bearerToken }
                 },
                 Parameters = parameters?.CustomData
-        };
+            };
         }
 
         /***************************************************/
