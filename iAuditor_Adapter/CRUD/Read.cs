@@ -179,10 +179,7 @@ namespace BH.Adapter.iAuditor
 
             return responseObjList[0];
         }
-
-
     }
-
 }
 
 
