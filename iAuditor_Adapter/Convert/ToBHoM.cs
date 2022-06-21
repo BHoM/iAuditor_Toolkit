@@ -73,7 +73,7 @@ namespace BH.Adapter.iAuditor
                 List<object> items = obj.PropertyValue("items") as List<object>;
                 for (int i = 0; i < items.Count(); i++)
                 {
-                    if (items[i].PropertyValue("label").ToString() == "Job leader")
+                    if (items[i].PropertyValue("label").ToString() == "Job leader" || items[i].PropertyValue("label").ToString() == "Job Leader")
                     {
                         jobLeader = items[i].PropertyValue("responses.text")?.ToString() ?? "";
                     }
