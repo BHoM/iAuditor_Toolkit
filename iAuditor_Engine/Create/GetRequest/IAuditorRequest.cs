@@ -34,11 +34,11 @@ namespace BH.Engine.Adapters.iAuditor
         /**** Public  Method                            ****/
         /***************************************************/
 
-        [Description("Create a GetRequest for iAuditor")]
-        [Input("apiCommand", "The iAuditor REST API command to create a GetRequest with")]
-        [Input("bearerToken", "The iAuditor bearerToken (this can be acquired using Compute BearerToken with your EC3 username and password)")]
-        [Input("parameters", "An optional CustomObject with properties representing parameters to create the GetRequest with (ie count, name_like, etc)")]
-        [Output("GetRequest", "A GetRequest with CarbonQueryDatabase specific headers and uri")]
+        [Description("Create a GetRequest for iAuditor.")]
+        [Input("apiCommand", "The iAuditor REST API command to create a GetRequest with.")]
+        [Input("bearerToken", "The iAuditor bearerToken (this can be acquired using Compute BearerToken with your EC3 username and password).")]
+        [Input("parameters", "An optional CustomObject with properties representing parameters to create the GetRequest with (ie count, name_like, etc).")]
+        [Output("GetRequest", "A GetRequest with CarbonQueryDatabase specific headers and uri.")]
 
         public static GetRequest IAuditorRequest(string apiCommand, string bearerToken, CustomObject parameters = null)
         {
