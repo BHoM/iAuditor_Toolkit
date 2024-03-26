@@ -42,10 +42,10 @@ namespace BH.Adapter.iAuditor
         /***************************************************/
 
         [Description("Adapter to connect to iAuditor.")]
-        [Input("username", "Provide iAuditor Username")]
-        [Input("password", "Provide iAuditor Password")]
-        [Input("token", "Provide iAuditor token instead of username and pw")]
-        [Output("adapter", "Adapter results")]
+        [Input("username", "Provide iAuditor Username.")]
+        [Input("password", "Provide iAuditor Password.")]
+        [Input("token", "Provide iAuditor token instead of username and password.")]
+        [Output("adapter", "Adapter results.")]
         public iAuditorAdapter(string username = "", string password = "", string token = null, bool active = false)
         {
             if (active)
