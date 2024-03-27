@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,10 +42,10 @@ namespace BH.Adapter.iAuditor
         /***************************************************/
 
         [Description("Adapter to connect to iAuditor.")]
-        [Input("username", "Provide iAuditor Username")]
-        [Input("password", "Provide iAuditor Password")]
-        [Input("token", "Provide iAuditor token instead of username and pw")]
-        [Output("adapter", "Adapter results")]
+        [Input("username", "Provide iAuditor Username.")]
+        [Input("password", "Provide iAuditor Password.")]
+        [Input("token", "Provide iAuditor token instead of username and password.")]
+        [Output("adapter", "Adapter results.")]
         public iAuditorAdapter(string username = "", string password = "", string token = null, bool active = false)
         {
             if (active)
@@ -66,5 +66,6 @@ namespace BH.Adapter.iAuditor
 
     }
 }
+
 
 

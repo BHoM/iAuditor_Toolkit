@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,10 +35,10 @@ namespace BH.Engine.Adapters.iAuditor
 {
     public static partial class Compute
     {
-        [Description("Returns a bearer token for the CarbonQueryDatabase system from the provided username and password")]
-        [Input("username", "Your username for the system")]
-        [Input("password", "Your password for the system - case sensitive, do not share scripts with this saved")]
-        [Output("bearerToken", "The bearer token to use the database system or the full response string if there was an error")]
+        [Description("Returns a bearer token for the CarbonQueryDatabase system from the provided username and password.")]
+        [Input("username", "Your username for the system.")]
+        [Input("password", "Your password for the system - case sensitive, do not share scripts with this saved.")]
+        [Output("bearerToken", "The bearer token to use the database system or the full response string if there was an error.")]
         public static string BearerToken(string username, string password)
         {
             string apiAddress = "https://api.safetyculture.io/auth";
@@ -83,6 +83,7 @@ namespace BH.Engine.Adapters.iAuditor
         }
     }
 }
+
 
 
 
